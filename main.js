@@ -92,6 +92,10 @@ window.onload = function () {
   init();
 };
 
+const convertFormat = (number) => {
+  return String(number + 1).padStart(4, "0");
+};
+
 const init = () => {
   testArr.map((element, idx) => {
     let li = document.createElement("li");
@@ -99,8 +103,7 @@ const init = () => {
     // index
     let index = document.createElement("p");
     index.classList.add("index");
-    const indexNumber = String(idx + 1).padStart(4, "0");
-    index.innerText = indexNumber;
+    index.innerText = convertFormat(idx);
     li.appendChild(index);
 
     // 해석
@@ -111,14 +114,16 @@ const init = () => {
 
     let quizContainer = document.createElement("div");
     quizContainer.classList.add("flex");
-    quizContainer.setAttribute("id", `quiz-${indexNumber}`);
 
     // 문제
     element.문제.map((word) => {
       let questionWord = document.createElement(
         word === "input" ? "input" : "p"
       );
-      questionWord.classList.add(word === "input" ? "quiz-input" : "quiz");
+      word === "input"
+        ? questionWord.classList.add(`quiz-${convertFormat(idx)}`, "quiz-input")
+        : questionWord.classList.add("quiz");
+
       questionWord.innerText = word;
       quizContainer.appendChild(questionWord);
       li.appendChild(quizContainer);
@@ -133,11 +138,24 @@ const markingBtn = document.querySelector(".marking-button");
 let answer = document.getElementById("quiz-0001");
 
 const handleMarking = () => {
-  testArr.map(({ 정답 }, idx) => {
-    let aa = document.getElementById(
-      `quiz-${String(idx + 1).padStart(4, "0")}`
+  // 정답만 모은 정답목록 배열
+  let answerArr = testArr.map(({ 정답 }) => [...정답]);
+
+  answerArr.map((answer, idx) => {
+    let userAnswer = document.querySelectorAll(`.quiz-${convertFormat(idx)}`);
+    let isCorrect;
+    userAnswer.forEach(
+      (element, i) => (isCorrect = element.value.toLowerCase() === answer[i])
     );
-    console.log(aa);
+    isCorrect
+      ? userAnswer.forEach((input) => {
+          input.classList.add("correct");
+          input.readOnly = true;
+        })
+      : userAnswer.forEach((input, i) => {
+          input.classList.add("wrong");
+          input.value = answer[i];
+        });
   });
 };
 
