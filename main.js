@@ -113,18 +113,18 @@ const init = () => {
     li.appendChild(해석);
 
     let quizContainer = document.createElement("div");
-    quizContainer.classList.add("flex");
+    quizContainer.classList.add("flex", "board");
 
     // 문제
-    element.문제.map((word) => {
+    element.문제.map((tile) => {
       let questionWord = document.createElement(
-        word === "input" ? "input" : "p"
+        tile === "input" ? "input" : "p"
       );
-      word === "input"
+      tile === "input"
         ? questionWord.classList.add(`quiz-${convertFormat(idx)}`, "quiz-input")
         : questionWord.classList.add("quiz");
 
-      questionWord.innerText = word;
+      questionWord.innerText = tile;
       quizContainer.appendChild(questionWord);
       li.appendChild(quizContainer);
     });
@@ -140,6 +140,8 @@ let answer = document.getElementById("quiz-0001");
 const handleMarking = () => {
   // 정답만 모은 정답목록 배열
   let answerArr = testArr.map(({ 정답 }) => [...정답]);
+  let indexArr = document.querySelectorAll(".index");
+  console.log(indexArr);
 
   answerArr.map((answer, idx) => {
     let userAnswer = document.querySelectorAll(`.quiz-${convertFormat(idx)}`);
@@ -147,14 +149,17 @@ const handleMarking = () => {
     userAnswer.forEach(
       (element, i) => (isCorrect = element.value.toLowerCase() === answer[i])
     );
+
     isCorrect
       ? userAnswer.forEach((input) => {
           input.classList.add("correct");
           input.readOnly = true;
+          indexArr[idx].classList.add("o");
         })
       : userAnswer.forEach((input, i) => {
           input.classList.add("wrong");
           input.value = answer[i];
+          indexArr[idx].classList.add("x");
         });
   });
 };
