@@ -5,13 +5,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <script defer src="./main.js"></script>
+
     <style>
+      h4 {
+        padding: 0;
+        margin: 0;
+        font-size: 1.1em;
+      }
       p {
         padding: 0;
         margin: 0;
         margin-right: 10px;
-        font-size: 1em;
+        font-size: 1.1em;
       }
       ul {
         margin: 0;
@@ -19,9 +24,13 @@
       }
       li {
         display: flex;
-        list-style: none;
-        margin-bottom: 20px;
+        align-items: center;
         flex-wrap: wrap;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        box-shadow: 3px 4px 4px #eee, -3px 4px 4px #eee;
+        list-style: none;
       }
       input {
         width: 40px;
@@ -37,6 +46,7 @@
       .index {
         width: 38px;
         flex-shrink: 0;
+        font-size: 0.8em;
       }
       .value {
         width: 160px;
@@ -44,13 +54,27 @@
       }
       .flex {
         display: flex;
+        align-items: center;
+        width: auto;
+      }
+      @media screen and (max-width: 412px) {
+        .flex {
+          width: 100%;
+          padding-top: 10px;
+          margin-left: 50px;
+        }
       }
     </style>
   </head>
   <body>
     <div id="main">
-      <h1>1000문장 챌린지</h1>
+      <header class="flex">
+        <h1>1000문장 챌린지</h1>
+        <button class="marking-button">채점하기</button>
+      </header>
+
       <ul id="container"></ul>
     </div>
+    <script src="./main.js"></script>
   </body>
 </html>

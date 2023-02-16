@@ -1,6 +1,6 @@
-const quizWrapper = document.getElementById("container");
+const testContainer = document.getElementById("container");
 
-const quizAnswer = [
+const testArr = [
   { 문제: ["you", "input"], 해석: "물론!", 정답: ["bet"] },
   { 문제: ["I", "input"], 해석: "내말이!", 정답: ["know"] },
   { 문제: ["input", "to go"], 해석: "잘했어!", 정답: ["way"] },
@@ -93,33 +93,52 @@ window.onload = function () {
 };
 
 const init = () => {
-  quizAnswer.map((element, idx) => {
+  testArr.map((element, idx) => {
     let li = document.createElement("li");
 
     // index
     let index = document.createElement("p");
     index.classList.add("index");
-    index.innerText = String(idx + 1).padStart(4, "0");
+    const indexNumber = String(idx + 1).padStart(4, "0");
+    index.innerText = indexNumber;
     li.appendChild(index);
 
     // 해석
-    let 해석 = document.createElement("p");
+    let 해석 = document.createElement("h4");
     해석.classList.add("value");
     해석.innerText = element.해석;
     li.appendChild(해석);
 
     let quizContainer = document.createElement("div");
     quizContainer.classList.add("flex");
+    quizContainer.setAttribute("id", `quiz-${indexNumber}`);
+
     // 문제
     element.문제.map((word) => {
-      let 문제단어 = document.createElement(word === "input" ? "input" : "p");
-      문제단어.classList.add(word === "input" ? "quiz-input" : "quiz");
-      문제단어.innerText = word;
-      console.log(quizContainer);
-      quizContainer.appendChild(문제단어);
+      let questionWord = document.createElement(
+        word === "input" ? "input" : "p"
+      );
+      questionWord.classList.add(word === "input" ? "quiz-input" : "quiz");
+      questionWord.innerText = word;
+      quizContainer.appendChild(questionWord);
       li.appendChild(quizContainer);
     });
 
-    quizWrapper.appendChild(li);
+    testContainer.appendChild(li);
   });
 };
+
+// 채점하기
+const markingBtn = document.querySelector(".marking-button");
+let answer = document.getElementById("quiz-0001");
+
+const handleMarking = () => {
+  testArr.map(({ 정답 }, idx) => {
+    let aa = document.getElementById(
+      `quiz-${String(idx + 1).padStart(4, "0")}`
+    );
+    console.log(aa);
+  });
+};
+
+markingBtn.addEventListener("click", handleMarking);
