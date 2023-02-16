@@ -1,4 +1,4 @@
-const quizWrapper = document.getElementById("quiz-container");
+const quizWrapper = document.getElementById("container");
 
 const quizAnswer = [
   { 문제: ["you", "input"], 해석: "물론!", 정답: ["bet"] },
@@ -108,12 +108,16 @@ const init = () => {
     해석.innerText = element.해석;
     li.appendChild(해석);
 
+    let quizContainer = document.createElement("div");
+    quizContainer.classList.add("flex");
     // 문제
     element.문제.map((word) => {
       let 문제단어 = document.createElement(word === "input" ? "input" : "p");
       문제단어.classList.add(word === "input" ? "quiz-input" : "quiz");
       문제단어.innerText = word;
-      li.appendChild(문제단어);
+      console.log(quizContainer);
+      quizContainer.appendChild(문제단어);
+      li.appendChild(quizContainer);
     });
 
     quizWrapper.appendChild(li);
