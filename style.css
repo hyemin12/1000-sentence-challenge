@@ -36,13 +36,40 @@ input.correct {
   background-color: #00ffa9;
   outline: none;
 }
-input.wrong {
+.marking .wrong {
   background-color: tomato;
-  outline: none;
+  padding-top: 2px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 4px;
 }
+
 #main {
-  max-width: 500px;
+  max-width: 480px;
   margin: 0 auto;
+  position: relative;
+}
+header {
+  text-align: center;
+  gap: 20px;
+  width: 100% !important;
+  background-color: bisque;
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9;
+}
+.marking-button,
+.reset-button {
+  padding: 6px 12px;
+  margin-bottom: 20px;
+}
+#container {
+  padding: 0 5px;
+  padding-top: 150px;
+  /* margin-bottom: 120px; */
 }
 .index {
   width: 38px;
@@ -76,7 +103,7 @@ input.wrong {
 }
 
 .value {
-  width: 160px;
+  width: 170px;
   flex-shrink: 0;
 }
 .flex {
