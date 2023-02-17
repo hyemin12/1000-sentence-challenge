@@ -233,7 +233,7 @@ const markingBtn = document.querySelector(".marking-button");
 let answer = document.getElementById("quiz-0001");
 
 const handleMarking = () => {
-  if (testContainer.classList.value === "marking") {
+  if (testContainer.classList.contains("marking")) {
     return;
   }
 
@@ -272,7 +272,7 @@ markingBtn.addEventListener("click", handleMarking);
 const resetBtn = document.querySelector(".reset-button");
 
 const handleReset = () => {
-  testContainer.classList.value === "";
+  testContainer.classList.remove("marking");
   console.log(testContainer.classList);
 };
 resetBtn.addEventListener("click", handleReset);
