@@ -272,7 +272,23 @@ markingBtn.addEventListener("click", handleMarking);
 const resetBtn = document.querySelector(".reset-button");
 
 const handleReset = () => {
+  const wrongArr = document.querySelectorAll(".wrong");
+  const correctArr = document.querySelectorAll(".correct");
+  // 오답
+  wrongArr.length > 0 &&
+    wrongArr.forEach((element, idx) => {
+      const quizInput = document.createElement("input");
+      quizInput.classList.add(`quiz-${convertFormat(idx)}`, "quiz-input");
+      element.before(quizInput);
+      element.remove();
+    });
+  // 정답
+  correctArr.length > 0 &&
+    correctArr.forEach((element, idx) => {
+      element.classList.remove("correct");
+      element.readOnly = false;
+      element.value = "";
+    });
   testContainer.classList.remove("marking");
-  console.log(testContainer.classList);
 };
 resetBtn.addEventListener("click", handleReset);
