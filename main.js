@@ -276,18 +276,18 @@ const handleReset = () => {
   const correctArr = document.querySelectorAll(".correct");
   // 오답
   wrongArr.length > 0 &&
-    wrongArr.forEach((element, idx) => {
+    wrongArr.forEach((wrongWord, idx) => {
       const quizInput = document.createElement("input");
       quizInput.classList.add(`quiz-${convertFormat(idx)}`, "quiz-input");
-      element.before(quizInput);
-      element.remove();
+      wrongWord.before(quizInput);
+      wrongWord.remove();
     });
   // 정답
   correctArr.length > 0 &&
-    correctArr.forEach((element, idx) => {
-      element.classList.remove("correct");
-      element.readOnly = false;
-      element.value = "";
+    correctArr.forEach((correctWord) => {
+      correctWord.classList.remove("correct");
+      correctWord.readOnly = false;
+      correctWord.value = "";
     });
   testContainer.classList.remove("marking");
 };
