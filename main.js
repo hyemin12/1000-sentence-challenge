@@ -236,10 +236,10 @@ const handleMarking = () => {
   if (testContainer.classList.contains("marking")) {
     return;
   }
+  let indexArr = document.querySelectorAll(".index");
 
   // 정답만 모은 정답목록 배열
   let answerArr = testArr.map(({ 정답 }) => [...정답]);
-  let indexArr = document.querySelectorAll(".index");
 
   answerArr.map((answer, idx) => {
     let userAnswer = document.querySelectorAll(`.quiz-${convertFormat(idx)}`);
@@ -250,15 +250,18 @@ const handleMarking = () => {
 
     isCorrect
       ? userAnswer.forEach((input) => {
-          input.classList.add("correct");
-          input.readOnly = true;
+          const markingText = document.createElement("p");
+          markingText.classList.add("correct");
+          markingText.innerText = input.value;
+          input.before(markingText);
+          input.remove();
           indexArr[idx].classList.add("o");
         })
       : userAnswer.forEach((input, i) => {
-          const correctAnswer = document.createElement("p");
-          correctAnswer.classList.add("wrong");
-          correctAnswer.innerText = answer[i];
-          input.before(correctAnswer);
+          const markingText = document.createElement("p");
+          markingText.classList.add("wrong");
+          markingText.innerText = answer[i];
+          input.before(markingText);
           input.remove();
           indexArr[idx].classList.add("x");
         });
@@ -272,23 +275,23 @@ markingBtn.addEventListener("click", handleMarking);
 const resetBtn = document.querySelector(".reset-button");
 
 const handleReset = () => {
-  const wrongArr = document.querySelectorAll(".wrong");
-  const correctArr = document.querySelectorAll(".correct");
-  // 오답
-  wrongArr.length > 0 &&
-    wrongArr.forEach((wrongWord, idx) => {
-      const quizInput = document.createElement("input");
-      quizInput.classList.add(`quiz-${convertFormat(idx)}`, "quiz-input");
-      wrongWord.before(quizInput);
-      wrongWord.remove();
+  const quizArr = document.querySelectorAll("#container .board");
+  let indexArr = document.querySelectorAll(".index");
+  quizArr.forEach((board, idx) => {
+    board.childNodes.forEach((element) => {
+      if (
+        element.classList.contains("correct") ||
+        element.classList.contains("wrong")
+      ) {
+        const quizInput = document.createElement("input");
+        quizInput.classList.add(`quiz-${convertFormat(idx)}`, "quiz-input");
+        indexArr[idx].classList.remove("x" || "o");
+        element.before(quizInput);
+        element.remove();
+      }
     });
-  // 정답
-  correctArr.length > 0 &&
-    correctArr.forEach((correctWord) => {
-      correctWord.classList.remove("correct");
-      correctWord.readOnly = false;
-      correctWord.value = "";
-    });
+  });
+
   testContainer.classList.remove("marking");
 };
 resetBtn.addEventListener("click", handleReset);

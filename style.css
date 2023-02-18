@@ -29,9 +29,12 @@ input {
   font-size: 1.1em;
   text-align: center;
 }
-input.correct {
+.marking .correct {
   background-color: #00ffa9;
-  outline: none;
+  padding-top: 2px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 4px;
 }
 .marking .wrong {
   background-color: tomato;
