@@ -1,4 +1,4 @@
-const testContainer = document.getElementById("container");
+const testContainer = document.getElementById("quiz-container");
 
 const testArr = [
   { 문제: ["you", "input"], 해석: "물론!", 정답: ["bet"] },
@@ -182,46 +182,98 @@ const testArr = [
 ];
 
 window.onload = function () {
-  init();
+  renderQuizItem();
+  renderPartItem();
 };
 
-// const
-
+/** 숫자 4자리 수 맞추는 함수 */
 const convertFormat = (number) => {
   return String(number + 1).padStart(4, "0");
 };
 
-const init = () => {
-  testArr.map((element, idx) => {
+const limit = 25;
+let currentIndex = 0;
+
+//  문제 바꾸기(currentIndex값 바꾸기)
+const handleSetCurrentIndex = (e) => {
+  const partArr = document.querySelectorAll(".part-item");
+
+  const id = e.target.id.replace("part", "") * 1;
+
+  // active 변경하기
+  partArr[currentIndex].classList.remove("active");
+  partArr[id].classList.add("active");
+
+  currentIndex = id;
+};
+
+const partWrapper = document.querySelector(".part-wrapper");
+
+// 파트 아이템 추가
+const renderPartItem = () => {
+  const partLength = testArr.length / limit;
+
+  Array(partLength)
+    .fill()
+    .map((a, idx) => {
+      partWrapper.insertAdjacentHTML(
+        "beforeend",
+        `<li class="part-item ${
+          idx === currentIndex && "active"
+        }" id="part${idx}">
+          Q${limit * idx + 1}~Q${limit * (idx + 1)}
+        </li>`
+      );
+      let partItem = document.getElementById(`part${idx}`);
+
+      partItem.addEventListener("click", handleSetCurrentIndex);
+
+      // 기존방법
+      // let partItem = document.createElement("li");
+      // partItem.classList.add("part-item");
+      // partItem.setAttribute("id", `part${idx}`);
+      // idx === currentIndex && partItem.classList.add("active");
+      // partItem.innerText = `Q${limit * idx + 1}~Q${limit * (idx + 1)}`;
+      // partWrapper.appendChild(partItem);
+    });
+};
+
+// 퀴즈 리스트 만들기
+const renderQuizItem = () => {
+  // 목록
+  let currentPart = testArr.slice(
+    limit * currentIndex,
+    limit * (currentIndex + 1)
+  );
+
+  // 퀴즈 아이템 추가
+  currentPart.map(({ 해석, 문제 }, idx) => {
     let li = document.createElement("li");
 
     // index
-    let index = document.createElement("p");
-    index.classList.add("index");
-    index.innerText = convertFormat(idx);
-    li.appendChild(index);
+    li.insertAdjacentHTML(
+      "beforeend",
+      `<p class="index">${convertFormat(idx)}</p>`
+    );
 
     // 해석
-    let 해석 = document.createElement("h4");
-    해석.classList.add("value");
-    해석.innerText = element.해석;
-    li.appendChild(해석);
+    li.insertAdjacentHTML("beforeend", `<h4 class="mean">${해석}</h4>`);
 
-    let quizContainer = document.createElement("div");
-    quizContainer.classList.add("flex", "board");
+    let quizWrapper = document.createElement("div");
+    quizWrapper.classList.add("flex", "board");
 
     // 문제
-    element.문제.map((tile) => {
-      let questionWord = document.createElement(
-        tile === "input" ? "input" : "p"
-      );
-      tile === "input"
-        ? questionWord.classList.add(`quiz-${convertFormat(idx)}`, "quiz-input")
-        : questionWord.classList.add("quiz");
-
-      questionWord.innerText = tile;
-      quizContainer.appendChild(questionWord);
-      li.appendChild(quizContainer);
+    문제.map((word) => {
+      word === "input"
+        ? quizWrapper.insertAdjacentHTML(
+            "beforeend",
+            `<input class="quiz-input" />`
+          )
+        : quizWrapper.insertAdjacentHTML(
+            "beforeend",
+            `<p class="quiz">${word}</p>`
+          );
+      li.appendChild(quizWrapper);
     });
 
     testContainer.appendChild(li);
@@ -275,7 +327,7 @@ markingBtn.addEventListener("click", handleMarking);
 const resetBtn = document.querySelector(".reset-button");
 
 const handleReset = () => {
-  const quizArr = document.querySelectorAll("#container .board");
+  const quizArr = document.querySelectorAll("#quiz-container .board");
   let indexArr = document.querySelectorAll(".index");
   quizArr.forEach((board, idx) => {
     board.childNodes.forEach((element) => {

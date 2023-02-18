@@ -44,7 +44,7 @@ input {
   padding-bottom: 4px;
 }
 
-#main {
+.container {
   max-width: 480px;
   margin: 0 auto;
   position: relative;
@@ -65,9 +65,20 @@ header {
   padding: 6px 12px;
   margin-top: 20px;
 }
-#container {
+#main {
   padding: 0 10px;
   padding-top: 150px;
+}
+.part-item {
+  display: inline-block;
+  background-color: #eee;
+  color: #555;
+  margin-right: 10px;
+  box-shadow: none;
+  cursor: pointer;
+}
+.part-item.active {
+  background-color: bisque;
 }
 .index {
   width: 38px;
@@ -100,7 +111,7 @@ header {
   left: 13px;
 }
 
-.value {
+.mean {
   width: 170px;
   flex-shrink: 0;
 }
