@@ -238,16 +238,20 @@ const renderPartItem = () => {
     });
 };
 
+let currentContents = testArr.slice(
+  limit * currentIndex,
+  limit * (currentIndex + 1)
+);
 // 퀴즈 리스트 만들기
 const renderQuizItem = () => {
   // 목록
-  let currentPart = testArr.slice(
-    limit * currentIndex,
-    limit * (currentIndex + 1)
-  );
+  // let currentContents = testArr.slice(
+  //   limit * currentIndex,
+  //   limit * (currentIndex + 1)
+  // );
 
   // 퀴즈 아이템 추가
-  currentPart.map(({ 해석, 문제 }, idx) => {
+  currentContents.map(({ 해석, 문제 }, idx) => {
     let li = document.createElement("li");
 
     // index
@@ -267,7 +271,7 @@ const renderQuizItem = () => {
       word === "input"
         ? quizWrapper.insertAdjacentHTML(
             "beforeend",
-            `<input class="quiz-input" />`
+            `<input class="quiz-input quiz-${convertFormat(idx)}" />`
           )
         : quizWrapper.insertAdjacentHTML(
             "beforeend",
@@ -282,7 +286,7 @@ const renderQuizItem = () => {
 
 // 채점하기
 const markingBtn = document.querySelector(".marking-button");
-let answer = document.getElementById("quiz-0001");
+// let answer = document.getElementById("quiz-0001");
 
 const handleMarking = () => {
   if (testContainer.classList.contains("marking")) {
@@ -291,32 +295,21 @@ const handleMarking = () => {
   let indexArr = document.querySelectorAll(".index");
 
   // 정답만 모은 정답목록 배열
-  let answerArr = testArr.map(({ 정답 }) => [...정답]);
+  let answerArr = currentContents.map(({ 정답 }) => [...정답]);
 
   answerArr.map((answer, idx) => {
     let userAnswer = document.querySelectorAll(`.quiz-${convertFormat(idx)}`);
-    let isCorrect;
-    userAnswer.forEach(
-      (element, i) => (isCorrect = element.value.toLowerCase() === answer[i])
-    );
 
-    isCorrect
-      ? userAnswer.forEach((input) => {
-          const markingText = document.createElement("p");
-          markingText.classList.add("correct");
-          markingText.innerText = answer[i];
-          input.before(markingText);
-          input.remove();
-          indexArr[idx].classList.add("o");
-        })
-      : userAnswer.forEach((input, i) => {
-          const markingText = document.createElement("p");
-          markingText.classList.add("wrong");
-          markingText.innerText = answer[i];
-          input.before(markingText);
-          input.remove();
-          indexArr[idx].classList.add("x");
-        });
+    // 정답여부 확인
+    userAnswer.forEach((element, i) => {
+      let isCorrect = element.value.toLowerCase() === answer[i];
+      element.insertAdjacentHTML(
+        "beforebegin",
+        `<p class="${isCorrect ? "correct" : "wrong"}">${answer[i]}</p>`
+      );
+      element.remove();
+      indexArr[idx].classList.add(isCorrect ? "o" : "x");
+    });
   });
   testContainer.classList.add("marking");
 };
