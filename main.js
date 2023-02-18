@@ -252,7 +252,7 @@ const handleMarking = () => {
       ? userAnswer.forEach((input) => {
           const markingText = document.createElement("p");
           markingText.classList.add("correct");
-          markingText.innerText = input.value;
+          markingText.innerText = answer[i];
           input.before(markingText);
           input.remove();
           indexArr[idx].classList.add("o");
