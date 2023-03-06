@@ -383,11 +383,12 @@ const renderQuizItem = () => {
   );
   currentContents.map(({ 해석, 문제 }, idx) => {
     let li = document.createElement("li");
+    const quizIndex = limit * currentIndex + idx;
 
     // index
     li.insertAdjacentHTML(
       "beforeend",
-      `<p class="index">${convertFormat(idx)}</p>`
+      `<p class="index">${convertFormat(quizIndex)}</p>`
     );
 
     // 해석
@@ -401,7 +402,7 @@ const renderQuizItem = () => {
       word === "input"
         ? quizWrapper.insertAdjacentHTML(
             "beforeend",
-            `<input class="quiz-input quiz-${convertFormat(idx)}" />`
+            `<input class="quiz-input quiz-${convertFormat(quizIndex)}" />`
           )
         : quizWrapper.insertAdjacentHTML(
             "beforeend",
