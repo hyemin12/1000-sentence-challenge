@@ -179,6 +179,131 @@ const testArr = [
     해석: "그만 좀 괴롭혀",
     정답: ["bugging"],
   },
+  {
+    문제: ["Don't", "input", "me"],
+    해석: "설마",
+    정답: ["tell"],
+  },
+  {
+    문제: ["Get", "input", "here"],
+    해석: "말도 안 돼",
+    정답: ["outta"],
+  },
+  {
+    문제: ["That's", "input"],
+    해석: "웃기지마",
+    정답: ["ridiculous"],
+  },
+  {
+    문제: ["Nice", "input"],
+    해석: "안 속아",
+    정답: ["try"],
+  },
+  {
+    문제: ["I don't", "input", "it"],
+    해석: "못 믿겠는데",
+    정답: ["buy"],
+  },
+  {
+    문제: ["You're", "input"],
+    해석: "뻥이지?",
+    정답: ["bluffing"],
+  },
+  {
+    문제: ["You're", "input", "it, aren't you?"],
+    해석: "너 꾀병이지?",
+    정답: ["faking"],
+  },
+  {
+    문제: ["No", "input", "no"],
+    해석: "안 된다면 안 되는 줄 알아?",
+    정답: ["means"],
+  },
+  {
+    문제: ["Not in a", "input", "years"],
+    해석: "택도 없는 소리",
+    정답: ["million"],
+  },
+  {
+    문제: ["I'm not a", "input"],
+    해석: "포기는 절대 못해",
+    정답: ["quitter"],
+  },
+  {
+    문제: ["input", "out of this"],
+    해석: "넌 빠져",
+    정답: ["stay"],
+  },
+  {
+    문제: ["None of your", "input"],
+    해석: "넌 몰라도 돼",
+    정답: ["business"],
+  },
+  {
+    문제: ["input", "out"],
+    해석: "참견 마",
+    정답: ["Butt"],
+  },
+  {
+    문제: ["Same", "input"],
+    해석: "나도",
+    정답: ["here"],
+  },
+  {
+    문제: ["Join the", "input"],
+    해석: "너만 그런 거 아니야",
+    정답: ["club"],
+  },
+  {
+    문제: ["Get in", "input"],
+    해석: "다 그래",
+    정답: ["line"],
+  },
+  {
+    문제: ["What are you", "input", "input"],
+    해석: "무슨 꿍꿍이야?",
+    정답: ["up", "to"],
+  },
+  {
+    문제: ["What", "input", "?"],
+    해석: "뭐 때문에?",
+    정답: ["for"],
+  },
+  {
+    문제: ["Who", "input", "?"],
+    해석: "알 게 뭐야?",
+    정답: ["cares"],
+  },
+  {
+    문제: ["I told you ", "input"],
+    해석: "그러게 내가 뭐랬어?",
+    정답: ["so"],
+  },
+  {
+    문제: ["input", "agian?"],
+    해석: "뭐라고요?",
+    정답: ["come"],
+  },
+  {
+    문제: ["input", "me through it"],
+    해석: "차근차근 말해줄래?",
+    정답: ["walk"],
+  },
+  {
+    문제: ["What did I", "input", "?"],
+    해석: "무슨 일 있었어?",
+    정답: ["miss"],
+  },
+  {
+    문제: ["What", "input", "you here?"],
+    해석: "여긴 무슨 일로 왔어?",
+    정답: ["brings"],
+  },
+  {
+    문제: ["keep me", "input"],
+    해석: "상황을 계속 알려줘",
+    정답: ["posted"],
+  },
 ];
 
 window.onload = function () {
@@ -205,13 +330,16 @@ const handleSetCurrentIndex = (e) => {
   partArr[id].classList.add("active");
 
   currentIndex = id;
+
+  document.querySelectorAll("#quiz-container li").forEach((li) => li.remove());
+  renderQuizItem();
 };
 
 const partWrapper = document.querySelector(".part-wrapper");
 
 // 파트 아이템 추가
 const renderPartItem = () => {
-  const partLength = testArr.length / limit;
+  const partLength = Math.ceil(testArr.length / limit);
 
   Array(partLength)
     .fill()
@@ -238,19 +366,21 @@ const renderPartItem = () => {
     });
 };
 
-let currentContents = testArr.slice(
-  limit * currentIndex,
-  limit * (currentIndex + 1)
-);
+// 현재 index 목록
+
 // 퀴즈 리스트 만들기
 const renderQuizItem = () => {
-  // 목록
-  // let currentContents = testArr.slice(
-  //   limit * currentIndex,
-  //   limit * (currentIndex + 1)
-  // );
-
-  // 퀴즈 아이템 추가
+  let currentContents = [...testArr].splice(
+    limit * currentIndex,
+    limit * (currentIndex + 1)
+  ); // 퀴즈 아이템 추가
+  console.log(
+    testArr.length,
+    currentIndex,
+    limit * currentIndex,
+    limit * (currentIndex + 1),
+    currentContents
+  );
   currentContents.map(({ 해석, 문제 }, idx) => {
     let li = document.createElement("li");
 
@@ -328,11 +458,12 @@ const handleReset = () => {
         element.classList.contains("correct") ||
         element.classList.contains("wrong")
       ) {
-        const quizInput = document.createElement("input");
-        quizInput.classList.add(`quiz-${convertFormat(idx)}`, "quiz-input");
-        indexArr[idx].classList.remove("x" || "o");
-        element.before(quizInput);
+        element.insertAdjacentHTML(
+          "beforebegin",
+          `<input class="quiz-input quiz-${convertFormat(idx)}" />`
+        );
         element.remove();
+        indexArr[idx].classList.remove("x" || "o");
       }
     });
   });
