@@ -306,86 +306,87 @@ const testArr = [
   },
 ];
 
+/** 브라우저 로드시 퀴즈,탭 화면에 출력되도록 설정 */
 window.onload = function () {
   renderQuizItem();
   renderPartItem();
 };
 
-/** 숫자 4자리 수 맞추는 함수 */
+/** 인덱스(문제번호) 4자리로 맞추는 함수 */
 const convertFormat = (number) => {
   return String(number + 1).padStart(4, "0");
 };
 
 const limit = 25;
-let currentIndex = 0;
+let currentPart = 0;
 
-//  문제 바꾸기(currentIndex값 바꾸기)
-const handleSetCurrentIndex = (e) => {
-  const partArr = document.querySelectorAll(".part-item");
+/** 탭(part-item) 클릭시 문제 바꿔서 화면에 출력되도록 설정 */
+const handleSetNewQuiz = (e) => {
+  const partItems = document.querySelectorAll(".part-item");
 
-  const id = e.target.id.replace("part", "") * 1;
+  const selectedPartId = e.target.id.replace("part", "") * 1;
 
-  // active 변경하기
-  partArr[currentIndex].classList.remove("active");
-  partArr[id].classList.add("active");
+  // active 변경하기 (클래스 추가/삭제)
+  partItems[currentPart].classList.remove("active");
+  partItems[selectedPartId].classList.add("active");
 
-  currentIndex = id;
+  currentPart = selectedPartId;
 
-  // quiz-container에 marking 클래스가 있을 경우에는 marking 클래스 삭제하기
+  // quiz-container에 marking 클래스가 있을 경우에는 reset 시키기
   if (testContainer.classList.contains("marking")) {
     handleReset();
   }
 
-  // 새로운 문제 렌더링
+  // 기존 문제 삭제하고, 새로운 문제 렌더링
   document.querySelectorAll("#quiz-container li").forEach((li) => li.remove());
   renderQuizItem();
 };
 
-const partWrapper = document.querySelector(".part-wrapper");
-
 // 파트 아이템 추가
 const renderPartItem = () => {
+  const partWrapper = document.querySelector(".part-wrapper");
   const partLength = Math.ceil(testArr.length / limit);
 
+  // html 요소 생성하고, 이벤트 추가하기
   Array(partLength)
     .fill()
     .map((a, idx) => {
       partWrapper.insertAdjacentHTML(
         "beforeend",
         `<li class="part-item ${
-          idx === currentIndex && "active"
+          idx === currentPart && "active"
         }" id="part${idx}">
           Q${limit * idx + 1}~Q${limit * (idx + 1)}
         </li>`
       );
-      let partItem = document.getElementById(`part${idx}`);
+      const partItem = document.getElementById(`part${idx}`);
 
-      partItem.addEventListener("click", handleSetCurrentIndex);
-
-      // 기존방법
-      // let partItem = document.createElement("li");
-      // partItem.classList.add("part-item");
-      // partItem.setAttribute("id", `part${idx}`);
-      // idx === currentIndex && partItem.classList.add("active");
-      // partItem.innerText = `Q${limit * idx + 1}~Q${limit * (idx + 1)}`;
-      // partWrapper.appendChild(partItem);
+      partItem.addEventListener("click", handleSetNewQuiz);
     });
+  // 기존방법
+  // let partItem = document.createElement("li");
+  // partItem.classList.add("part-item");
+  // partItem.setAttribute("id", `part${idx}`);
+  // idx === currentPart && partItem.classList.add("active");
+  // partItem.innerText = `Q${limit * idx + 1}~Q${limit * (idx + 1)}`;
+  // partWrapper.appendChild(partItem);
 };
 
-// 현재 index 목록
-const handleCurrentIndex = (index) => {
+// 현재 파트에 맞는 콘텐츠들 가져오기
+const setCurrentContents = (index) => {
   return [...testArr].splice(limit * index, limit * (index + 1));
 };
 
 // 퀴즈 리스트 만들기
 const renderQuizItem = () => {
-  const currentContents = handleCurrentIndex(currentIndex);
+  const currentContents = setCurrentContents(currentPart);
+
   // 퀴즈 아이템 추가
   currentContents.map(({ 해석, 문제 }, idx) => {
     let li = document.createElement("li");
-    const quizIndex = limit * currentIndex + idx;
+    const quizIndex = limit * currentPart + idx;
 
-    // index
+    // 문제번호 (index)
     li.insertAdjacentHTML(
       "beforeend",
       `<p class="index">${convertFormat(quizIndex)}</p>`
@@ -394,10 +395,10 @@ const renderQuizItem = () => {
     // 해석
     li.insertAdjacentHTML("beforeend", `<h4 class="mean">${해석}</h4>`);
 
+    // 문제
     let quizWrapper = document.createElement("div");
     quizWrapper.classList.add("flex", "board");
 
-    // 문제
     문제.map((word) => {
       word === "input"
         ? quizWrapper.insertAdjacentHTML(
@@ -415,29 +416,30 @@ const renderQuizItem = () => {
   });
 };
 
-// 채점하기
+/** 채점하기 */
 const markingBtn = document.querySelector(".marking-button");
 
 const handleMarking = () => {
+  // 채점 여부 확인 후 채점 상태라면 return 시키기
   if (testContainer.classList.contains("marking")) {
     return;
   }
-  // 현재 active 되어 있는 콘텐츠 내용 가져오기
-  const currentContents = handleCurrentIndex(currentIndex);
+  testContainer.classList.add("marking");
 
-  // index 값 가져오기
-  let indexArr = document.querySelectorAll(".index");
+  // 현재 active 되어 있는 콘텐츠 내용 가져오기
+  const currentContents = setCurrentContents(currentPart);
+
+  // 문제번호들 가져오기
+  const indexArr = document.querySelectorAll(".index");
 
   // 정답만 모은 정답목록 배열
-  let answerArr = currentContents.map(({ 정답 }) => [...정답]);
+  const answerArr = currentContents.map(({ 정답 }) => [...정답]);
 
   answerArr.map((answer, idx) => {
-    const quizIndex = limit * currentIndex + idx;
+    const quizIndex = limit * currentPart + idx;
     let userAnswer = document.querySelectorAll(
       `.quiz-${convertFormat(quizIndex)}`
     );
-    // console.log(indexArr, quizIndex, answerArr, userAnswer);
-
     // 정답여부 확인
     userAnswer.forEach((element, i) => {
       let isCorrect = element.value.toLowerCase() === answer[quizIndex];
@@ -445,23 +447,24 @@ const handleMarking = () => {
         "beforebegin",
         `<p class="${isCorrect ? "correct" : "wrong"}">${answer[i]}</p>`
       );
-      console.log(answerArr, answer);
+
       element.remove();
-      // console.log(indexArr[idx]);
+
       indexArr[idx].classList.add(isCorrect ? "o" : "x");
     });
   });
-  testContainer.classList.add("marking");
 };
 
 markingBtn.addEventListener("click", handleMarking);
 
-// 리셋 버튼
+//** 다시풀기 (리셋) */
 const resetBtn = document.querySelector(".reset-button");
 
 const handleReset = () => {
+  // 문제,문제번호들 가져오기
   const quizArr = document.querySelectorAll("#quiz-container .board");
-  let indexArr = document.querySelectorAll(".index");
+  const indexArr = document.querySelectorAll(".index");
+  console.dir(quizArr);
   quizArr.forEach((board, idx) => {
     board.childNodes.forEach((element) => {
       if (
