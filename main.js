@@ -333,7 +333,7 @@ const handleSetCurrentIndex = (e) => {
 
   // quiz-container에 marking 클래스가 있을 경우에는 marking 클래스 삭제하기
   if (testContainer.classList.contains("marking")) {
-    return testContainer.classList.remove("marking");
+    handleReset();
   }
 
   // 새로운 문제 렌더링
@@ -373,12 +373,13 @@ const renderPartItem = () => {
 };
 
 // 현재 index 목록
-let currentContents = [...testArr].splice(
-  limit * currentIndex,
-  limit * (currentIndex + 1)
-);
+const handleCurrentIndex = (index) => {
+  return [...testArr].splice(limit * index, limit * (index + 1));
+};
+
 // 퀴즈 리스트 만들기
 const renderQuizItem = () => {
+  const currentContents = handleCurrentIndex(currentIndex);
   // 퀴즈 아이템 추가
   currentContents.map(({ 해석, 문제 }, idx) => {
     let li = document.createElement("li");
@@ -421,7 +422,10 @@ const handleMarking = () => {
   if (testContainer.classList.contains("marking")) {
     return;
   }
+  // 현재 active 되어 있는 콘텐츠 내용 가져오기
+  const currentContents = handleCurrentIndex(currentIndex);
 
+  // index 값 가져오기
   let indexArr = document.querySelectorAll(".index");
 
   // 정답만 모은 정답목록 배열
@@ -432,17 +436,18 @@ const handleMarking = () => {
     let userAnswer = document.querySelectorAll(
       `.quiz-${convertFormat(quizIndex)}`
     );
-    console.log(indexArr, quizIndex, answerArr, userAnswer);
+    // console.log(indexArr, quizIndex, answerArr, userAnswer);
 
     // 정답여부 확인
     userAnswer.forEach((element, i) => {
-      let isCorrect = element.value.toLowerCase() === answer[i];
+      let isCorrect = element.value.toLowerCase() === answer[quizIndex];
       element.insertAdjacentHTML(
         "beforebegin",
         `<p class="${isCorrect ? "correct" : "wrong"}">${answer[i]}</p>`
       );
+      console.log(answerArr, answer);
       element.remove();
-      console.log(indexArr[idx]);
+      // console.log(indexArr[idx]);
       indexArr[idx].classList.add(isCorrect ? "o" : "x");
     });
   });
